@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Проверщик</title>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body{
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+      padding: 16px;
+    }
+
+    .quiz{
+      background:#fff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+      text-align: center;
+      width: 360px;
+    }
+
+    .quiz h2{ margin-bottom: 20px; font-size: 22px; }
+
+    .quiz img{
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .quiz input{
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      outline: none;
+    }
+    .quiz input:focus{ border-color:#4caf50; }
+
+    .quiz button{
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background:#4caf50;
+      color:#fff;
+      cursor:pointer;
+      transition: transform .06s ease, filter .2s ease;
+    }
+    .quiz button:hover{ filter: brightness(0.95); }
+    .quiz button:active{ transform: translateY(1px); }
+
+    #result{
+      margin-top: 15px;
+      min-height: 24px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* ===== МОДАЛЬНОЕ ОКНО ===== */
+    .modal{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-content{
+      background: #fff;
+      padding: 26px 24px;
+      border-radius: 16px;
+      text-align: center;
+      width: min(520px, 92vw);
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+
+    /* шрифт поменьше, чем был */
+    .modal-content p{
+      font-size: 18px;      /* <-- уменьшили */
+      line-height: 1.35;
+      margin-bottom: 18px;
+      color: #111;
+    }
+
+    /* красивая кнопка "Перейти" */
+    .modal-content button{
+      appearance: none;
+      width: 220px;
+      max-width: 100%;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #3a8dff, #1f6fe0);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(31,111,224,.25);
+      transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-content button:hover{
+      filter: brightness(1.05);
+      box-shadow: 0 12px 26px rgba(31,111,224,.32);
+    }
+
+    .modal-content button:active{
+      transform: translateY(1px);
+      filter: brightness(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz">
+    <h2>Кто изображен на рисунке?</h2>
+
+    <img src="kapibara.jpg" alt="Животное">
+
+    <input type="text" id="answer" placeholder="Введите ответ">
+
+    <button id="btnAnswer">Ответить</button>
+
+    <div id="result"></div>
+  </div>
+
+  <!-- Модальное окно -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <p>Правильнее было бы написать <b>"Капибара"</b>, но все равно держи!</p>
+      <button onclick="goToLink()">Перейти</button>
+    </div>
+  </div>
+
+  <script>
+    let attempts = 0;
+    const correctAnswer = "капибара";
+    const link = "https://youtu.be/dQw4w9WgXcQ?si=_SxzZ6UUWFZmRBbj";
+
+    const inputEl = document.getElementById("answer");
+    const resultEl = document.getElementById("result");
+    const modalEl = document.getElementById("modal");
+    const btnAnswer = document.getElementById("btnAnswer");
+
+    btnAnswer.addEventListener("click", checkAnswer);
+
+
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") checkAnswer();
+    });
+
+    function checkAnswer() {
+      const input = inputEl.value.trim().toLowerCase();
+
+      if (input === correctAnswer) {
+        window.location.href = link;
+        return;
+      }
+
+      attempts++;
+
+      if (attempts === 1) {
+        resultEl.textContent = "Не все так просто...";
+        resultEl.style.color = "red";
+      } else if (attempts === 2) {
+        resultEl.textContent = "Попробуй еще раз";
+        resultEl.style.color = "red";
+      } else {
+        // 3-я ошибка — модалка
+        modalEl.style.display = "flex";
+      }
+    }
+
+    function goToLink() {
+      window.location.href = link;
+    }
+  </script>
+
+</body>
+</html>
